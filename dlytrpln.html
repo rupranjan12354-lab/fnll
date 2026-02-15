@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Tour Plan</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#f4f6f9;
+    margin:0;
+    padding:10px;
+}
+
+.container{
+    max-width:900px;
+    margin:auto;
+    background:#fff;
+    padding:20px;
+    border-radius:8px;
+    box-shadow:0 0 10px rgba(0,0,0,0.1);
+    p{
+        text-align: center;
+    }
+}
+
+.company{
+    text-align:center;
+}
+
+h3{
+    text-align:center;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-bottom:15px;
+}
+
+th, td{
+    border:1px solid #ccc;
+    padding:8px;
+    text-align:center;
+}
+
+input{
+    width:100%;
+    border:none;
+    padding:5px;
+}
+
+.center{
+    text-align:center;
+}
+
+button{
+    padding:8px 12px;
+    background:#003366;
+    color:#fff;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+.delbtn{
+    background:#c62828;
+}
+h2{
+    text-decoration: underline;
+}
+a{
+    padding-bottom: 30px;
+}
+
+button:hover{
+    opacity:0.9;
+}
+
+@media(max-width:600px){
+    th, td{
+        font-size:12px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="company">
+    <h2>Lostom snacks</h2>
+    <a href="https://www.lostomindustries.com">www.lostomindustries.com</a>
+</div>
+
+
+
+<!-- BASIC DETAILS -->
+<table>
+<tr>
+<td>Date</td>
+<td><input type="date" id="date"></td>
+<td>Day</td>
+<td><input type="text" id="day"></td>
+</tr>
+<tr>
+<td>Area</td>
+<td><input type="text" id="area"></td>
+<td>HQ</td>
+<td><input type="text" id="hq"></td>
+</tr>
+</table>
+
+<!-- TOUR TABLE -->
+<table>
+<thead>
+<tr>
+<th>S.No</th>
+<th>Party/Doctor</th>
+<th>Category</th>
+<th>Time</th>
+<th>Order</th>
+<th>Priority</th>
+<th>Del</th>
+</tr>
+</thead>
+
+<tbody id="tbody">
+</tbody>
+</table>
+
+<div class="center">
+<button type="button" onclick="addRow()">+ Add Row</button>
+</div>
+
+<br>
+
+<div class="center">
+<button type="button" onclick="sendWhatsApp()">Submit</button>
+</div>
+<p>2010 © Lostom snacks | All Rights Reserved</p>
+</div>
+
+<script>
+
+window.onload = function(){
+    addRow();
+};
+
+function addRow(){
+    var tbody = document.getElementById("tbody");
+    var row = tbody.insertRow();
+
+    row.insertCell(0).innerHTML = tbody.rows.length;
+    row.insertCell(1).innerHTML = '<input type="text" class="party">';
+    row.insertCell(2).innerHTML = '<input type="text" class="category">';
+    row.insertCell(3).innerHTML = '<input type="time" class="time">';
+    row.insertCell(4).innerHTML = '<input type="text" class="order">';
+    row.insertCell(5).innerHTML = '<input type="text" class="priority">';
+    row.insertCell(6).innerHTML =
+        '<button type="button" class="delbtn" onclick="deleteRow(this)">X</button>';
+}
+
+function deleteRow(btn){
+    var row = btn.parentNode.parentNode;
+    row.parentNode.removeChild(row);
+    updateSerial();
+}
+
+function updateSerial(){
+    var tbody = document.getElementById("tbody");
+    for(var i=0;i<tbody.rows.length;i++){
+        tbody.rows[i].cells[0].innerHTML = i+1;
+    }
+}
+
+function sendWhatsApp(){
+
+    var message = "Daily Tour Plan\n\n";
+    message += "Date: " + date.value + "\n";
+    message += "Day: " + day.value + "\n";
+    message += "Area: " + area.value + "\n";
+    message += "HQ: " + hq.value + "\n\n";
+
+    var parties = document.getElementsByClassName("party");
+    var categories = document.getElementsByClassName("category");
+    var times = document.getElementsByClassName("time");
+    var orders = document.getElementsByClassName("order");
+    var priorities = document.getElementsByClassName("priority");
+
+    for(var i=0;i<parties.length;i++){
+        if(parties[i].value !== ""){
+            message += "S.No " + (i+1) + "\n";
+            message += "Party: " + parties[i].value + "\n";
+            message += "Category: " + categories[i].value + "\n";
+            message += "Time: " + times[i].value + "\n";
+            message += "Order: " + orders[i].value + "\n";
+            message += "Priority: " + priorities[i].value + "\n\n";
+        }
+    }
+
+    var phoneNumber = "917033810886"; // apna WhatsApp number
+    window.open("https://wa.me/" + phoneNumber + "?text=" + encodeURIComponent(message));
+}
+
+</script>
+
+</body>
+</html>

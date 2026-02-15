@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sales Tour Plan</title>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:Arial, Helvetica, sans-serif;
+  background:#f4f6f9;
+}
+
+.header{
+  background:#fff;
+  text-align:center;
+  padding:14px;
+  box-shadow:0 2px 6px rgba(0,0,0,0.1);
+}
+.header h2{
+  margin:0;
+  color:#0b5394;
+  font-size:20px;
+}
+
+.container{
+  margin:10px;
+  background:#fff;
+  padding:12px;
+  border-radius:10px;
+}
+
+h3{margin-top:20px;font-size:16px}
+
+/* TABLE WRAP */
+.table-wrap{
+  overflow-x:auto;
+  margin-top:10px;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  min-width:700px;
+}
+
+th,td{
+  border:1px solid #ccc;
+  padding:6px;
+  text-align:center;
+  font-size:13px;
+}
+
+th{
+  background:#eef3f8;
+  position:sticky;
+  top:0;
+}
+
+input,select{
+  width:100%;
+  padding:8px;
+  font-size:14px;
+  border:1px solid #bbb;
+  border-radius:5px;
+}
+
+/* BUTTONS */
+button{
+  border:none;
+  border-radius:6px;
+  padding:10px;
+  cursor:pointer;
+  font-size:15px;
+}
+
+.addbtn{
+  background:#0b5394;
+  color:#fff;
+  width:100%;
+  margin-top:10px;
+}
+
+.delbtn{
+  background:#e91e63;
+  color:#fff;
+  padding:6px 10px;
+}
+
+.submitbtn{
+  background:#25D366;
+  color:#fff;
+  width:100%;
+  font-size:18px;
+  padding:14px;
+  margin-top:20px;
+}
+
+.summary input{
+  background:#f9f9f9;
+  font-weight:bold;
+  text-align:center;
+}
+
+/* MOBILE */
+@media(max-width:600px){
+  th,td{font-size:12px}
+  input,select{font-size:13px}
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <h2>LOSTOM SNACKS</h2>
+  <a href="https://www.lostomindustries.com">www.lostomindustries.com</a>
+</div>
+
+<div class="container">
+
+<h3>Distributor Visit Details</h3>
+<div class="table-wrap">
+<table id="visitTable">
+<tr>
+  <th>Date</th>
+  <th>HQ</th>
+  <th>Distributor</th>
+  <th>Sales Executive</th>
+  <th>Area / Zone</th>
+  <th>Contact</th>
+  <th>Del</th>
+</tr>
+</table>
+</div>
+<button class="addbtn" onclick="addVisitRow()">➕ Add Visit Row</button>
+
+<h3>Retailer / Party Sale Entry</h3>
+<div class="table-wrap">
+<table id="saleTable">
+<tr>
+  <th>Retailer</th>
+  <th>Location</th>
+  <th>Product</th>
+  <th>Qty</th>
+  <th>Rate</th>
+  <th>Total</th>
+  <th>Payment</th>
+  <th>Remarks</th>
+  <th>Del</th>
+</tr>
+</table>
+</div>
+<button class="addbtn" onclick="addSaleRow()">➕ Add Sale Row</button>
+
+<h3>Summary</h3>
+<div class="table-wrap">
+<table class="summary">
+<tr>
+  <th>Total Sale</th>
+  <th>Total Collection</th>
+  <th>Credit Sale</th>
+  <th>Cash Sale</th>
+</tr>
+<tr>
+  <td><input id="totalSale" readonly></td>
+  <td><input id="totalCollection" readonly></td>
+  <td><input id="creditSale" readonly></td>
+  <td><input id="cashSale" readonly></td>
+</tr>
+</table>
+</div>
+
+<h3>Final Details</h3>
+<table>
+<tr>
+  <th>Distributor</th>
+  <th>Manager</th>
+  <th>Sales Executive</th>
+</tr>
+<tr>
+  <td><input id="finalDistributor"></td>
+  <td><input id="finalManager"></td>
+  <td><input id="finalExecutive"></td>
+</tr>
+</table>
+
+<button class="submitbtn" onclick="submitWhatsApp()">📲 Submit on WhatsApp</button>
+
+2010 © Lostom snacks | All Rights Reserved
+</div>
+
+<script>
+/* VISIT TABLE */
+function addVisitRow(){
+  let t=document.getElementById("visitTable");
+  let r=t.insertRow(-1);
+  let today=new Date().toISOString().split('T')[0];
+
+  r.insertCell(0).innerHTML="<input type='date' value='"+today+"'>";
+  for(let i=1;i<=5;i++) r.insertCell(i).innerHTML="<input>";
+  r.insertCell(6).innerHTML="<button class='delbtn' onclick='delRow(this)'>X</button>";
+}
+
+/* SALE TABLE */
+function addSaleRow(){
+  let t=document.getElementById("saleTable");
+  let r=t.insertRow(-1);
+
+  r.insertCell(0).innerHTML="<input>";
+  r.insertCell(1).innerHTML="<input>";
+  r.insertCell(2).innerHTML="<input>";
+  r.insertCell(3).innerHTML="<input type='number' oninput='calc(this)'>";
+  r.insertCell(4).innerHTML="<input type='number' oninput='calc(this)'>";
+  r.insertCell(5).innerHTML="<input readonly>";
+  r.insertCell(6).innerHTML="<select onchange='summary()'><option>Cash</option><option>Credit</option></select>";
+  r.insertCell(7).innerHTML="<input>";
+  r.insertCell(8).innerHTML="<button class='delbtn' onclick='delRow(this)'>X</button>";
+}
+
+function delRow(btn){
+  btn.parentNode.parentNode.remove();
+  summary();
+}
+
+function calc(el){
+  let r=el.parentNode.parentNode;
+  let q=r.cells[3].querySelector("input").value||0;
+  let rt=r.cells[4].querySelector("input").value||0;
+  r.cells[5].querySelector("input").value=(q*rt).toFixed(2);
+  summary();
+}
+
+/* SUMMARY */
+function summary(){
+  let t=document.getElementById("saleTable");
+  let ts=0,c=0,cr=0;
+
+  for(let i=1;i<t.rows.length;i++){
+    let r=t.rows[i];
+    let v=parseFloat(r.cells[5].querySelector("input").value)||0;
+    ts+=v;
+    r.cells[6].querySelector("select").value==="Cash"?c+=v:cr+=v;
+  }
+
+  totalSale.value=ts.toFixed(2);
+  cashSale.value=c.toFixed(2);
+  creditSale.value=cr.toFixed(2);
+  totalCollection.value=c.toFixed(2);
+}
+
+/* WHATSAPP SUBMIT (ALL DATA) */
+function submitWhatsApp(){
+  let msg="📋 SALES TOUR REPORT\n\n";
+
+  msg+="🚚 VISIT DETAILS\n";
+  msg+="Date | HQ | Distributor | Sales Exe | Area | Contact\n";
+  let vt=visitTable;
+  for(let i=1;i<vt.rows.length;i++){
+    for(let j=0;j<6;j++){
+      msg+=(vt.rows[i].cells[j].querySelector("input").value||"-")+" | ";
+    }
+    msg+="\n";
+  }
+
+  msg+="\n🛒 SALE DETAILS\n";
+  msg+="Retailer | Location | Product | Qty | Rate | Total | Pay | Remarks\n";
+  let st=saleTable;
+  for(let i=1;i<st.rows.length;i++){
+    let r=st.rows[i];
+    msg+=(r.cells[0].querySelector("input").value||"-")+" | ";
+    msg+=(r.cells[1].querySelector("input").value||"-")+" | ";
+    msg+=(r.cells[2].querySelector("input").value||"-")+" | ";
+    msg+=(r.cells[3].querySelector("input").value||"0")+" | ";
+    msg+=(r.cells[4].querySelector("input").value||"0")+" | ";
+    msg+=(r.cells[5].querySelector("input").value||"0")+" | ";
+    msg+=(r.cells[6].querySelector("select").value||"-")+" | ";
+    msg+=(r.cells[7].querySelector("input").value||"-")+"\n";
+  }
+
+  msg+="\n📊 SUMMARY\n";
+  msg+="Total Sale: ₹"+totalSale.value+"\n";
+  msg+="Cash Sale: ₹"+cashSale.value+"\n";
+  msg+="Credit Sale: ₹"+creditSale.value+"\n";
+  msg+="Total Collection: ₹"+totalCollection.value+"\n";
+
+  msg+="\n👤 FINAL DETAILS\n";
+  msg+="Distributor: "+(finalDistributor.value||"-")+"\n";
+  msg+="Manager: "+(finalManager.value||"-")+"\n";
+  msg+="Sales Executive: "+(finalExecutive.value||"-")+"\n";
+
+  window.location.href="https://wa.me/917033810886?text="+encodeURIComponent(msg);
+}
+
+/* DEFAULT ROWS */
+addVisitRow();
+addSaleRow();
+</script>
+
+</body>
+</html>

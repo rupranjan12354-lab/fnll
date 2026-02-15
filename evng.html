@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Evening Report</title>
+
+<style>
+body{font-family:Arial;background:#f2f2f2;padding:10px}
+.box{background:#fff;padding:15px;border-radius:10px;max-width:900px;margin:auto}
+h2{text-align:center;color:#fc1414;font-size:30px}
+table{width:100%;border-collapse:collapse;margin-top:10px}
+th,td{border:1px solid #ccc;padding:5px;text-align:center}
+input,select{width:100%;padding:6px}
+button{padding:8px;border:none;border-radius:5px;margin-top:10px;cursor:pointer}
+.add{background:#198754;color:#fff}
+.delete{background:#dc3545;color:#fff}
+.submit{background:#0a58ca;color:#fff;width:100%;font-size:18px}
+a{font-size:15px}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+<h2>
+Lostom Snacks<br>
+<a href="https://www.lostomindustries.com">www.lostomindustries.com</a>
+</h2>
+
+<input id="staff" placeholder="Staff Name">
+<input id="area" placeholder="Area">
+<input id="time" type="time">
+
+<!-- PARTY -->
+<h3>Party</h3>
+<table>
+<tr><th>Party</th><th>Order</th><th>Payment</th><th>Mode</th><th>Del</th></tr>
+<tbody id="partyBody">
+<tr>
+<td><input></td>
+<td><input></td>
+<td><input></td>
+<td>
+<select>
+<option>Cash</option>
+<option>UPI</option>
+<option>Credit</option>
+</select>
+</td>
+<td><button type="button" class="delete" onclick="deleteRow(this)">❌</button></td>
+</tr>
+</tbody>
+</table>
+<button type="button" class="add" onclick="addParty()">➕ Add Party</button>
+
+<!-- EXPENSE -->
+<h3>Expense</h3>
+<table>
+<tr><th>Type</th><th>Amount</th><th>Del</th></tr>
+<tbody id="expenseBody">
+<tr>
+<td><input></td>
+<td><input></td>
+<td><button type="button" class="delete" onclick="deleteRow(this)">❌</button></td>
+</tr>
+</tbody>
+</table>
+<button type="button" class="add" onclick="addExpense()">➕ Add Expense</button>
+
+<!-- STOCK -->
+<h3>Stock</h3>
+<table>
+<tr><th>Product</th><th>Closing</th><th>Del</th></tr>
+<tbody id="stockBody">
+<tr>
+<td><input></td>
+<td><input></td>
+<td><button type="button" class="delete" onclick="deleteRow(this)">❌</button></td>
+</tr>
+</tbody>
+</table>
+<button type="button" class="add" onclick="addStock()">➕ Add Stock</button>
+
+<button type="button" class="submit" onclick="sendWA()">📲 Submit</button>
+</div>
+
+<script>
+var whatsappNumber = "917033810886";
+
+/* ADD ROWS */
+function addParty(){
+document.getElementById("partyBody").insertRow().innerHTML =
+"<td><input></td><td><input></td><td><input></td>"+
+"<td><select><option>Cash</option><option>UPI</option><option>Credit</option></select></td>"+
+"<td><button type='button' class='delete' onclick='deleteRow(this)'>❌</button></td>";
+}
+
+function addExpense(){
+document.getElementById("expenseBody").insertRow().innerHTML =
+"<td><input></td><td><input></td>"+
+"<td><button type='button' class='delete' onclick='deleteRow(this)'>❌</button></td>";
+}
+
+function addStock(){
+document.getElementById("stockBody").insertRow().innerHTML =
+"<td><input></td><td><input></td>"+
+"<td><button type='button' class='delete' onclick='deleteRow(this)'>❌</button></td>";
+}
+
+function deleteRow(btn){
+btn.parentNode.parentNode.remove();
+}
+
+/* SEND WHATSAPP */
+function sendWA(){
+navigator.geolocation.getCurrentPosition(function(p){
+
+var msg =
+"📋 Evening Report\n"+
+"Staff: "+document.getElementById("staff").value+
+"\nArea: "+document.getElementById("area").value+
+"\nTime: "+document.getElementById("time").value+
+"\n\n";
+
+/* PARTY */
+msg += "🧾 Party Details:\n";
+msg += "Party | Order | Payment | Mode\n";
+msg += "-----------------------------\n";
+
+document.querySelectorAll("#partyBody tr").forEach(function(row,i){
+var f = row.querySelectorAll("input,select");
+if(f[0].value !== ""){
+msg +=
+(i+1)+". "+f[0].value+
+" | "+f[1].value+
+" | "+f[2].value+
+" | "+f[3].value+"\n";
+}
+});
+
+/* EXPENSE */
+msg += "\n💸 Expenses:\n";
+msg += "Type | Amount\n";
+msg += "-------------\n";
+
+document.querySelectorAll("#expenseBody tr").forEach(function(row,i){
+var f = row.querySelectorAll("input");
+if(f[0].value !== ""){
+msg +=
+(i+1)+". "+f[0].value+
+" | ₹"+f[1].value+"\n";
+}
+});
+
+/* STOCK */
+msg += "\n📦 Stock Closing:\n";
+msg += "Product | Closing\n";
+msg += "-----------------\n";
+
+document.querySelectorAll("#stockBody tr").forEach(function(row,i){
+var f = row.querySelectorAll("input");
+if(f[0].value !== ""){
+msg +=
+(i+1)+". "+f[0].value+
+" | "+f[1].value+"\n";
+}
+});
+
+/* LOCATION */
+msg += "\n📍 Location:\nhttps://maps.google.com/?q="
++ p.coords.latitude + "," + p.coords.longitude;
+
+window.open(
+"https://wa.me/"+whatsappNumber+
+"?text="+encodeURIComponent(msg)
+);
+});
+}
+</script>
+
+</body>
+</html>
